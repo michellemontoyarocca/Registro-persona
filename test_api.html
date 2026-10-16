@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test API</title></head>
+<body style="font-family:system-ui;margin:20px">
+  <h3>Registrar Persona</h3>
+  <input id="codigo" placeholder="codigo (ej EMP001)" />
+  <input id="nombre" placeholder="nombre_completo" style="width:320px" />
+  <button id="btnReg">Registrar</button>
+
+  <h3>Listar Personal</h3>
+  <button id="btnList">Listar</button>
+
+  <pre id="out" style="background:#111;color:#0f0;padding:12px;border-radius:10px;white-space:pre-wrap"></pre>
+
+<script>
+const out = document.getElementById('out');
+const apiBase = '/deteccionrostro/api';
+
+document.getElementById('btnReg').onclick = async () => {
+  const codigo = document.getElementById('codigo').value.trim();
+  const nombre = document.getElementById('nombre').value.trim();
+  const fd = new FormData();
+  fd.append('codigo', codigo);
+  fd.append('nombre_completo', nombre);
+  fd.append('activo', '1');
+
+  const r = await fetch(`${apiBase}/registrar_persona.php`, { method:'POST', body: fd });
+  const j = await r.json().catch(()=>({ok:false,error:'INVALID_JSON'}));
+  out.textContent = JSON.stringify(j, null, 2);
+};
+
+document.getElementById('btnList').onclick = async () => {
+  const r = await fetch(`${apiBase}/listar_personal.php`);
+  const j = await r.json().catch(()=>({ok:false,error:'INVALID_JSON'}));
+  out.textContent = JSON.stringify(j, null, 2);
+};
+</script>
+</body>
+</html>
